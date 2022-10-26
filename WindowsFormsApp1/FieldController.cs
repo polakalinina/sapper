@@ -14,6 +14,7 @@ namespace WindowsFormsApp1
         public event Action GameWon;
         public event Action GameLost; 
 
+        //Вычисляет размер ячейки
         public int CellSize
         {
             get
@@ -41,13 +42,13 @@ namespace WindowsFormsApp1
             {
                 for (int j = 0; j < _field.Cols; j++)
                 {
-                    CellView cv = new CellView(_field, i, j);
-                    cv.Location = new Point(r.X + j * CellSize, r.Y + i * CellSize);
-                    cv.Size = new Size(CellSize, CellSize);
-                    cv.StateChanged += CvOnStateChanged;
-                    cv.Start += CvOnStart;
-                    cv.Name = $"c{i},{j}";
-                    _container.Controls.Add(cv);
+                    var cellView = new CellView(_field, i, j);
+                    cellView.Location = new Point(r.X + j * CellSize, r.Y + i * CellSize);
+                    cellView.Size = new Size(CellSize, CellSize);
+                    cellView.StateChanged += CellViewOnStateChanged;
+                    cellView.Start += CellViewOnStart;
+                    cellView.Name = $"c{i},{j}";
+                    _container.Controls.Add(cellView);
                 }
             }
         }
@@ -69,12 +70,12 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void CvOnStart()
+        private void CellViewOnStart()
         {
             _field.Mine();
         }
 
-        private void CvOnStateChanged(CellView cell)
+        private void CellViewOnStateChanged(CellView cell)
         {
             if (cell.State == StateType.Opened)
             {
@@ -95,7 +96,7 @@ namespace WindowsFormsApp1
                 {
                     if (_field.GetNeighboursMineCount(cell.Row, cell.Col) == 0)
                     {
-                        var nbrs = GetNeghbours(cell);
+                        var nbrs = GetNeighbours(cell);
                         nbrs.ForEach(c => c.State = StateType.Opened);
                     }
                 }
@@ -103,10 +104,11 @@ namespace WindowsFormsApp1
 
             var isGameWon = true;
             
+            //Проверка, выиграна ли игра
             foreach (var control in _container.Controls)
             {
                 if (control is CellView cellView && 
-                    !(cellView.State is StateType.Marked && _field[cellView.Row, cellView.Col] ||
+                    !(cellView.State == StateType.Marked && _field[cellView.Row, cellView.Col] ||
                       cellView.State is StateType.Opened && !_field[cellView.Row, cellView.Col]))
                 {
                     isGameWon = false;
@@ -131,9 +133,9 @@ namespace WindowsFormsApp1
             return r;
         }
 
-        private List<CellView> GetNeghbours(CellView cell)
+        private List<CellView> GetNeighbours(CellView cell)
         {
-            var nbrs = new List<CellView>();
+            var neighbours = new List<CellView>();
             for (int i = cell.Row - 1; i <= cell.Row + 1; i++)
             {
                 if (i < 0 || i >= _field.Rows) continue;
@@ -144,13 +146,14 @@ namespace WindowsFormsApp1
                     var ctrl = _container.Controls.Find($"c{i},{j}", false)[0];
                     if (ctrl is CellView cvCtrl)
                     {
-                        nbrs.Add(cvCtrl);
+                        neighbours.Add(cvCtrl);
                     }
                 }
             }
-            return nbrs;
+            return neighbours;
         }
 
+        //Удаляет всё, чтобы начать новую игру
         public void Dispose()
         {
             int cc = _container.Controls.Count;

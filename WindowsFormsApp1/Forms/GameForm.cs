@@ -22,14 +22,17 @@ namespace WindowsFormsApp1.Forms
 
         private void Init()
         {
-            _fController?.Dispose();
+            if (_fController != null)
+            {
+                _fController.Dispose();
+            }
             _f = new Field(10, 15);
-            _fController = new FieldController(panel1, _f, label1);
+            _fController = new FieldController(panel1, _f, timerLabel);
             
             _fController.GameWon += () =>
             {
                 timer.Stop();
-                if (_user.Record == 0 || _user.Record > _time)
+                if (_user.Record == 0 || _time < _user.Record)
                 {
                     _user.Record = _time;
                     Database.Save(_user);
@@ -41,11 +44,11 @@ namespace WindowsFormsApp1.Forms
             };
             
             _time = 0;
-            label1.Text = _time.ToString();
+            timerLabel.Text = _time.ToString();
             timer.Start();
         }
         
-        private void button1_Click(object sender, EventArgs e)
+        private void newGameButton_Click(object sender, EventArgs e)
         {
             Init();
         }
@@ -58,7 +61,7 @@ namespace WindowsFormsApp1.Forms
         private void timer1_Tick(object sender, EventArgs e)
         {
             _time += (decimal) 0.01;
-            label1.Text = _time.ToString();
+            timerLabel.Text = _time.ToString();
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace WindowsFormsApp1
 {
+    //Поле ячеек
     public class Field
     {
         private int _cols;
@@ -11,7 +12,6 @@ namespace WindowsFormsApp1
         {
             get => _cols;
             set => _cols = Math.Min(30, Math.Max(5, value));
-            
         }
 
         public int Rows
@@ -23,11 +23,12 @@ namespace WindowsFormsApp1
             }
         }
 
+        //Возвращает количество мин
         public int MineCount => (int)Math.Ceiling(Rows * Cols * 0.2);
 
         private bool[,] _mineField;
         private Random _r = new Random((int)DateTime.Now.Ticks);
-
+        
         public bool this[int row, int col]
         {
             get
@@ -36,6 +37,7 @@ namespace WindowsFormsApp1
                 return _mineField[row, col];
             }
         }
+        
         public Field(int w, int h)
         {
             Cols = w;
@@ -43,6 +45,7 @@ namespace WindowsFormsApp1
             _mineField = new bool[Rows, Cols];
         }
 
+        //Расставляет мины
         public void Mine()
         {
             for (int i = 0; i < MineCount; i++)
@@ -53,6 +56,7 @@ namespace WindowsFormsApp1
             }
         }
 
+        //Возвращает количество мин на соседних полях
         public int GetNeighboursMineCount(int row, int col)
         {
             int cnt = 0;

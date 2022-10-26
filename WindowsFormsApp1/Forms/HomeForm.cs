@@ -15,7 +15,7 @@ namespace WindowsFormsApp1.Forms
             
             helloLabel.Text = $"Привет, { _user.Name}";
             recordLabel.Text = $"Рекорд: {_user.Record}";
-
+            
             nameField.DataBindings.Add("Text", _user, "Name", false, DataSourceUpdateMode.OnPropertyChanged);
             emailField.DataBindings.Add("Text", _user, "Email", false, DataSourceUpdateMode.OnPropertyChanged);
         }

@@ -11,6 +11,7 @@ namespace WindowsFormsApp1
     public delegate void ChangeStateDelegate(CellView cell);
     public delegate void StartDelegate();
 
+    //Ячейка
     public class CellView : Control
     {
         private Field _f;
@@ -23,6 +24,7 @@ namespace WindowsFormsApp1
         private bool _content => _f[_row, _col];
         private StateType _state = StateType.Closed;
 
+        //Состояние - Закрыта, Открыта, Отмечена
         public StateType State
         {
             get => _state;
@@ -54,6 +56,7 @@ namespace WindowsFormsApp1
             firstClick = true;
         }
 
+        //Выполняется в момент отрисовки ячейки
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -78,19 +81,20 @@ namespace WindowsFormsApp1
                 }
             }
         }
-
+        
         private void DrawMark(Graphics g)
         {
             Brush b = new SolidBrush(Color.Blue);
             g.FillEllipse(b, 3, 3, Width-7, Height-7);
         }
+        
         private void DrawOpened(Graphics g)
         {
             var p = new Pen(Color.Black);
             g.DrawRectangle(p, 0, 0, Width - 1, Height - 1);
             if (!_content)
             {
-                DrawNeghbours(g);
+                DrawNeighbours(g);
             }
             else
             {
@@ -115,7 +119,7 @@ namespace WindowsFormsApp1
             g.DrawLine(p, 1, Height-1, Width-1, 1);
         }
 
-        private void DrawNeghbours(Graphics g)
+        private void DrawNeighbours(Graphics g)
         {
             var fnt = new Font(FontFamily.GenericMonospace,
                 14, FontStyle.Bold);
@@ -132,6 +136,7 @@ namespace WindowsFormsApp1
             }
         }
 
+        //Выполняется в момент нажатия на ячейку
         protected override void OnMouseClick(MouseEventArgs e)
         {
             base.OnMouseClick(e);

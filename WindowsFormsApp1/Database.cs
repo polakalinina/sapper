@@ -15,8 +15,8 @@ namespace WindowsFormsApp1
             
             if (!File.Exists(FileName))
             {
-                var fileStream = File.Create(FileName);
-                fileStream.Dispose();
+                var file = File.Create(FileName);
+                file.Close();
             }
             
             var lines = File.ReadLines(FileName);
@@ -34,10 +34,10 @@ namespace WindowsFormsApp1
                     Record = decimal.Parse(parts[4])
                 };
 
-                var prviousUserRecord = Users.FirstOrDefault(u => u.Login == user.Login);
-                if (prviousUserRecord != null)
+                var previousUserNote = Users.FirstOrDefault(userFromList => userFromList.Login == user.Login);
+                if (previousUserNote != null)
                 {
-                    Users.Remove(prviousUserRecord);
+                    Users.Remove(previousUserNote);
                 }
                 
                 Users.Add(user);
@@ -55,19 +55,19 @@ namespace WindowsFormsApp1
                                                 user.Password == password);
         }
 
-        public static void AddUser(User newUser)
+        public static void AddUser(User user)
         {
-            Users.Add(newUser);
+            Users.Add(user);
 
             var writer = File.AppendText(FileName);
-            writer.WriteLineAsync($"{newUser.Login};{newUser.Name};{newUser.Email};{newUser.Password};{newUser.Record}");
+            writer.WriteLine($"{user.Login};{user.Name};{user.Email};{user.Password};{user.Record}");
             writer.Close();
         }
         
         public static void Save(User user)
         {
             var writer = File.AppendText(FileName);
-            writer.WriteLineAsync($"{user.Login};{user.Name};{user.Email};{user.Password};{user.Record}");
+            writer.WriteLine($"{user.Login};{user.Name};{user.Email};{user.Password};{user.Record}");
             writer.Close();
         }
     }
